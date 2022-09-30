@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Random;
 
 
 @CommandLine.Command(name = "start", mixinStandardHelpOptions = true, description = "Triggers SPAMMING of jokes", version = "0.0.1", showDefaultValues = true)
@@ -113,6 +114,6 @@ public class Start implements Runnable {
             Log.error("Can't read file with messages");
             throw new RuntimeException(e);
         }
-        return messages.get(RandomUtils.nextInt(0, messages.size()));
+        return messages.get(new Random().nextInt(0, messages.size()));
     }
 }

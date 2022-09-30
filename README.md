@@ -1,3 +1,1 @@
-# nimbus-websocket-client
-
-Client application used as Instrument SIMU.
+# Twitch Jokes Bot

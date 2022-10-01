@@ -4,7 +4,6 @@ import com.gikk.twirk.events.TwirkListener;
 import io.quarkus.logging.Log;
 import io.quarkus.runtime.Quarkus;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import picocli.CommandLine;
@@ -35,6 +34,11 @@ public class Start implements Runnable {
             "@|fg(green) Example: start -t=binoclagonnalit|@")
     String target;
 
+    @CommandLine.Option(names = {"-a", "--auto"}, description = "If true - answers everyone with random joke. Otherwise, !паста is recognized. Optional. False by default. " +
+            "@|fg(green) Example: start -a=false|@", defaultValue = "false")
+    static boolean isAutoResponse;
+
+
     @CommandLine.Option(names = {"-pa", "--path"}, description = "Path for providing text file. Optional. " +
             "@|fg(green) Example: start -pa='C:\\Users\\liwgfr\\IdeaProjects\\twitch_bot\\src\\main\\resources\\ForMessages.txt'@", defaultValue = "src/main/resources/ForMessages.txt")
     static String file;
@@ -43,10 +47,8 @@ public class Start implements Runnable {
     boolean isVerbose;
 
 
-
     @Override
     public void run() {
-
         Twirk twirk = new TwirkBuilder(channel, username, pass)
                 .setVerboseMode(isVerbose)
                 .build();
@@ -66,31 +68,11 @@ public class Start implements Runnable {
         if (StringUtils.isNotBlank(target)) {
             twitchUser += target;
             twirk.channelMessage(twitchUser + " " + msg);
-        } else {
-            Log.info("Online users are: " + twirk.getUsersOnline());
-            if (!twirk.getUsersOnline().isEmpty()) {
-                while (true) {
-                    try {
-                        Thread.sleep(2500);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    twitchUser += twirk.getUsersOnline().toArray()[twirk.getUsersOnline().size() - 1];
-                    twirk.channelMessage(twitchUser + " " + msg);
-                    twitchUser = "";
-                }
-            } else {
-                twirk.channelMessage(msg);
-            }
         }
-
-
-
         Quarkus.waitForExit();
     }
 
     private static TwirkListener getOnDisconnectListener(final Twirk twirk) {
-
         return new TwirkListener() {
             @Override
             public void onDisconnect() {

@@ -3,6 +3,7 @@ import com.gikk.twirk.commands.CommandExampleBase;
 import com.gikk.twirk.enums.USER_TYPE;
 import com.gikk.twirk.types.twitchMessage.TwitchMessage;
 import com.gikk.twirk.types.users.TwitchUser;
+import org.apache.commons.lang3.StringUtils;
 
 public class CommandHandler extends CommandExampleBase {
     private final Twirk twirk;
@@ -29,6 +30,8 @@ public class CommandHandler extends CommandExampleBase {
 
     @Override
     public void onPrivMsg(TwitchUser sender, TwitchMessage message) {
-        twirk.channelMessage(sender.getDisplayName() + " " + Start.generateMsg());
+        if (Start.isAutoResponse || StringUtils.containsAnyIgnoreCase(message.getContent(), getCommandWords())) {
+            twirk.channelMessage(sender.getDisplayName() + " " + Start.generateMsg());
+        }
     }
 }

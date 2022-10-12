@@ -32,11 +32,15 @@ public class Start implements Runnable {
 
     @CommandLine.Option(names = {"-t", "--target"}, description = "Providing target to be SPAMMED. Optional. " +
             "@|fg(green) Example: start -t=binoclagonnalit|@")
-    String target;
+    static String target;
 
     @CommandLine.Option(names = {"-a", "--auto"}, description = "If true - answers everyone with random joke. Otherwise, !паста is recognized. Optional. False by default. " +
             "@|fg(green) Example: start -a=false|@", defaultValue = "false")
     static boolean isAutoResponse;
+
+    @CommandLine.Option(names = {"-g", "--glue"}, description = "If true - answers for the specific user with concrete delay. Requires '_' between substrings. --target must be set. Optional. False by default. 10s by default. " +
+            "@|fg(green) Example: start -t=binoclagonnalit -g=true_10s|@")
+    static String isGlued;
 
 
     @CommandLine.Option(names = {"-pa", "--path"}, description = "Path for providing text file. Optional. " +
@@ -65,7 +69,7 @@ public class Start implements Runnable {
         }
         String msg = generateMsg();
         String twitchUser = "@";
-        if (StringUtils.isNotBlank(target)) {
+        if (StringUtils.isNotBlank(target) && StringUtils.isBlank(isGlued)) {
             twitchUser += target;
             twirk.channelMessage(twitchUser + " " + msg);
         }
